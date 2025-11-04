@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Swoyamjit Biswal • Portfolio</title>
+  <meta name="description" content="CSE Student • Android & Web Developer • Live animated portfolio with 3D cards and glowing motion." />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg1:#0b0f1a;
+      --bg2:#101631;
+      --text:#f4f6fa;
+      --muted:#a6b0c6;
+      --primary:#7cd3ff;
+      --accent:#b8ffec;
+      --glass:rgba(255,255,255,.05);
+      --border:1px solid rgba(255,255,255,.1);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:Poppins,system-ui;
+      color:var(--text);
+      background:radial-gradient(circle at 30% 20%,#0c132b 0%,#080a17 100%);
+      overflow-x:hidden;
+    }
+
+    /* 🔮 Animated Canvas Background */
+    #bgCanvas{
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      background:linear-gradient(120deg,var(--bg1),var(--bg2));
+    }
+
+    header{
+      position:sticky;
+      top:0;
+      background:rgba(15,20,40,0.5);
+      backdrop-filter:blur(10px);
+      border-bottom:var(--border);
+      z-index:50;
+    }
+    .nav{
+      max-width:1100px;margin:auto;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:15px 25px;
+    }
+    .brand{
+      font-weight:700;
+      background:linear-gradient(120deg,var(--primary),var(--accent));
+      -webkit-background-clip:text;
+      color:transparent;
+    }
+    nav a{
+      color:var(--muted);
+      text-decoration:none;
+      margin:0 10px;
+      font-weight:600;
+      transition:.3s;
+    }
+    nav a:hover, nav a.active{color:var(--text);}
+
+    main{max-width:1100px;margin:auto;padding:60px 25px;}
+    section{margin-bottom:100px;}
+    h1,h2,h3{line-height:1.2;}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center;}
+    h1{font-size:clamp(36px,5vw,64px);}
+    .typing{
+      display:inline-block;
+      min-height:32px;
+      border-right:3px solid var(--primary);
+      padding-right:8px;
+      white-space:nowrap;
+      overflow:hidden;
+    }
+    .lead{color:var(--muted);max-width:60ch;}
+    .cta{margin-top:25px;display:flex;flex-wrap:wrap;gap:12px;}
+    .btn{
+      background:linear-gradient(135deg,var(--accent),var(--primary));
+      border:none;
+      color:#0b0f1a;
+      font-weight:700;
+      border-radius:14px;
+      padding:12px 20px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.4);
+      transition:transform .3s,box-shadow .3s;
+      text-decoration:none;
+    }
+    .btn:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.6);}
+    .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.15);}
+
+    .card{
+      background:var(--glass);
+      border:var(--border);
+      border-radius:var(--radius);
+      padding:25px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.35);
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* Floating glow behind cards */
+    .card::before{
+      content:'';
+      position:absolute;inset:-40%;
+      background:radial-gradient(circle,var(--primary),transparent 60%);
+      opacity:0.05;
+      animation:floatGlow 8s ease-in-out infinite alternate;
+    }
+    @keyframes floatGlow{
+      0%{transform:translate3d(-10%,0,0) scale(1);}
+      100%{transform:translate3d(10%,10%,0) scale(1.3);}
+    }
+
+    .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:25px;}
+    .project[data-tilt]{perspective:1000px;transition:transform .2s ease;}
+    .inner{
+      background:var(--glass);
+      border:var(--border);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 8px 25px rgba(0,0,0,.3);
+      transition:transform .4s;
+    }
+    .thumb{
+      height:160px;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      border-radius:14px;
+      display:grid;place-items:center;
+      font-weight:800;font-size:22px;color:#0b0f1a;margin-bottom:10px;
+    }
+
+    footer{text-align:center;color:var(--muted);border-top:1px solid rgba(255,255,255,.1);padding:25px 0;}
+
+    @media(max-width:900px){.hero{grid-template-columns:1fr;}}
+  </style>
+</head>
+
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <header>
+    <div class="nav">
+      <div class="brand">SB • Portfolio</div>
+      <nav>
+        <a href="#home" class="active">Home</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div>
+        <h1>Hi, I’m <span style="background:linear-gradient(135deg,var(--accent),var(--primary));-webkit-background-clip:text;color:transparent;">Swoyamjit Biswal</span></h1>
+        <div class="typing" id="typing"></div>
+        <p class="lead">I build intelligent, user-focused digital experiences through code, design, and innovation. Focused on creating modern, responsive apps with style & performance.</p>
+        <div class="cta">
+          <a class="btn" href="#projects">View Projects</a>
+          <a class="btn ghost" href="mailto:swoyamjitbiswal@gmail.com">Email Me</a>
+          <a class="btn ghost" href="https://github.com/SwoyamjitBiswal" target="_blank">GitHub Profile</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Currently Building</h3>
+        <ul>
+          <li>AI-powered Kotlin shopping app</li>
+          <li>Angular + Node full-stack dashboard</li>
+          <li>Patient Care Clinical Resource Managment System</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="projects">
+      <h2>Featured Projects</h2>
+      <div class="project-grid">
+        <article class="project" data-tilt>
+          <div class="inner">
+            <div class="thumb">ShopEase</div>
+            <h3>ShopEase – Android E-commerce</h3>
+            <p>Modern Android shopping app using MVVM, Jetpack Compose, and Retrofit.</p>
+          </div>
+        </article>
+        <article class="project" data-tilt>
+          <div class="inner">
+            <div class="thumb">DashPro</div>
+            <h3>DashPro – Analytics Dashboard</h3>
+            <p>Angular + Node app with real-time charts and clean design.</p>
+          </div>
+        </article>
+        <article class="project" data-tilt>
+          <div class="inner">
+            <div class="thumb">UI Kit</div>
+            <h3>UI Motion Kit</h3>
+            <p>A library of smooth CSS animations and reusable components.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Get In Touch</h2>
+      <p>Email: <a href="mailto:swoyamjitbiswal@gmail.com">swoyamjitbiswal@gmail.com</a></p>
+      <p>GitHub: <a href="https://github.com/SwoyamjitBiswal" target="_blank">github.com/SwoyamjitBiswal</a></p>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> Swoyamjit Biswal • Built with ❤️ and innovation</footer>
+
+  <script>
+    // Typing animation
+    const typingEl=document.getElementById('typing');
+    const messages=[
+      'CSE Student | Android & Web Developer',
+      'Crafting interactive, elegant UIs',
+      'Bringing ideas to life with clean code'
+    ];
+    let msg=0, char=0, del=false;
+    function type(){
+      typingEl.textContent=messages[msg].slice(0,char);
+      if(!del && char<messages[msg].length){char++;}
+      else if(del && char>0){char--;}
+      else if(!del){del=true;setTimeout(type,1200);return;}
+      else{del=false;msg=(msg+1)%messages.length;}
+      setTimeout(type,del?30:45);
+    } type();
+
+    // Floating 3D tilt effect
+    document.querySelectorAll('[data-tilt]').forEach(card=>{
+      const inner=card.querySelector('.inner');
+      card.addEventListener('mousemove',e=>{
+        const r=card.getBoundingClientRect();
+        const x=(e.clientX-r.left)/r.width-0.5;
+        const y=(e.clientY-r.top)/r.height-0.5;
+        inner.style.transform=`rotateX(${-y*10}deg) rotateY(${x*10}deg)`;
+      });
+      card.addEventListener('mouseleave',()=>inner.style.transform='none');
+    });
+
+    // Live background with moving particles
+    const c=document.getElementById('bgCanvas');
+    const ctx=c.getContext('2d');
+    let w,h,particles=[];
+    function resize(){
+      w=c.width=window.innerWidth;
+      h=c.height=window.innerHeight;
+      particles=Array.from({length:60},()=>({
+        x:Math.random()*w,
+        y:Math.random()*h,
+        r:Math.random()*2+1,
+        dx:(Math.random()-.5)*0.8,
+        dy:(Math.random()-.5)*0.8
+      }));
+    }
+    window.addEventListener('resize',resize);
+    resize();
+
+    function animate(){
+      ctx.fillStyle='rgba(10,15,30,0.3)';
+      ctx.fillRect(0,0,w,h);
+      particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(120,200,255,0.5)';
+        ctx.fill();
+        p.x+=p.dx;p.y+=p.dy;
+        if(p.x<0||p.x>w)p.dx*=-1;
+        if(p.y<0||p.y>h)p.dy*=-1;
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    document.getElementById('year').textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>
